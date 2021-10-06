@@ -1,7 +1,11 @@
+import ErrorPage from './ErrorPage.js'
 import VerticalLayout from './VerticalLayout.js'
 
-export default () => {
-
+export default (error) => {
+  if (error) {
+    return ErrorPage(error)
+  } else{
+    
   return (`
     <div class='layout'>
       ${VerticalLayout(120)}
@@ -56,6 +60,7 @@ export default () => {
                   <div class="col-half">
                     <label for="file" class="bold-label">Justificatif</label>
                     <input required type="file" class="form-control blue-border" data-testid="file" />
+                    <span class="error-message"></span>
                   </div>
                 </div>
             </div>
@@ -71,4 +76,5 @@ export default () => {
       </div>
     </div>
   `)
+  }
 }

@@ -19,7 +19,11 @@ export default class NewBill {
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
-    this.firestore
+
+    let error = document.querySelector('.error-message');
+    
+    if(e.target.value.includes('jpg')  || e.target.value.includes('jpeg') || e.target.value.includes('png')){
+      this.firestore
       .storage
       .ref(`justificatifs/${fileName}`)
       .put(file)
@@ -27,8 +31,18 @@ export default class NewBill {
       .then(url => {
         this.fileUrl = url
         this.fileName = fileName
+        error.innerHTML = "";
       })
+    }else{ 
+      error.innerHTML = 'format accepté uniquement : .jpg, .jpeg, .png';
+      error.style.color = 'red';
+      error.style.fontStyle = 'italic'
+      document.querySelector(`input[data-testid="file"]`).value = null;
+    }
+    
+   
   }
+  
   handleSubmit = e => {
     e.preventDefault()
     console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
@@ -46,11 +60,13 @@ export default class NewBill {
       fileName: this.fileName,
       status: 'pending'
     }
+   
     this.createBill(bill)
     this.onNavigate(ROUTES_PATH['Bills'])
   }
 
   // not need to cover this function by tests
+  /* istanbul ignore next */
   createBill = (bill) => {
     if (this.firestore) {
       this.firestore
