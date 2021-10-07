@@ -57,9 +57,9 @@ describe('Given I am connected as Employee and I am on Bill page', () => {
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname })
       }
-      const firestore = null
+      
       const bill = new Bills({
-        document, onNavigate, firestore, bills, localStorage: window.localStorage
+        document, onNavigate, firestore: null, bills, localStorage: window.localStorage
       })
       $.fn.modal = jest.fn()
       const handleClickIconEye = jest.fn((e) => bill.handleClickIconEye(eye[0]))  
@@ -84,9 +84,9 @@ describe('Given I am connected as Employee and I am on Bill page', () => {
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname })
       }
-      const firestore = null
+    
       const bill = new Bills({
-        document, onNavigate, firestore, bills, localStorage: window.localStorage
+        document, onNavigate, firestore: null, bills, localStorage: window.localStorage
       })
       //$.fn.modal = jest.fn()
       const handleClickNewBill = jest.fn((e) => bill.handleClickNewBill)  

@@ -39,8 +39,6 @@ export default class NewBill {
       error.style.fontStyle = 'italic'
       document.querySelector(`input[data-testid="file"]`).value = null;
     }
-    
-   
   }
   
   handleSubmit = e => {
