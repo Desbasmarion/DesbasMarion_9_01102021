@@ -32,10 +32,13 @@ describe("Given I am connected as an employee", () => {
 describe('Given I try to connect on app as an Employee', () => {
   describe('When I am on Login Page', () => {
     test('Then it should render LoadingPage', () => {
+      //On affiche la page loading en faisant passer la condition loading de la page BillsUI à true
     const html = BillsUI({loading : true})
     document.body.innerHTML = html
+    //On vérifie la présence du mot 'Loading...' sur la page
     expect(screen.getAllByText('Loading...')).toBeTruthy()
     })
+    //On test l'autre condition > la page erreur
     test('Then it should render ErrorPage', () => {
       const html = BillsUI({error : true})
       document.body.innerHTML = html
@@ -48,31 +51,45 @@ describe('Given I try to connect on app as an Employee', () => {
 describe('Given I am connected as Employee and I am on Bill page', () => {
   describe('When I click on the icon eye', () => {
     test('A modal should open', () => {
+      //On indique que l'on se trouve sur la page Employee
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
       }))
+      //On affiche la page Bill en récupérant les data liés aux notes de frais
       const html = BillsUI({data : bills})
       document.body.innerHTML = html
+
+      //????
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname })
       }
       
+      //On instancie la class Bills
       const bill = new Bills({
         document, onNavigate, firestore: null, bills, localStorage: window.localStorage
       })
+
+      //On simule la fonction modal > création d'une modale (dans BillsUI)
       $.fn.modal = jest.fn()
+
+      //On simule la méthode handleClickIconEye 
       const handleClickIconEye = jest.fn((e) => bill.handleClickIconEye(eye[0]))  
+
+      //On simule l'évènement du clic avec fireEvent
       const eye = screen.getAllByTestId("icon-eye")
       eye[0].addEventListener('click', handleClickIconEye)
       fireEvent.click(eye[0])
+
       //On vérifie que la fonction handleClickIconEye soit bien appelée
       expect(handleClickIconEye).toHaveBeenCalled()
+
       //On vérifie l'ouverture de la modale pour visualiser le justificatif
       const modale = screen.getByTestId('modaleFile')
       expect(modale).toBeTruthy()
     })
   })
+
   describe('When I click on "nouvelle note de frais"', () => {
     test('A modal should open', () => {
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
@@ -84,18 +101,23 @@ describe('Given I am connected as Employee and I am on Bill page', () => {
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname })
       }
-    
+  
       const bill = new Bills({
         document, onNavigate, firestore: null, bills, localStorage: window.localStorage
       })
-      //$.fn.modal = jest.fn()
+    
+      //On simule la méthode handleClickNewBill
       const handleClickNewBill = jest.fn((e) => bill.handleClickNewBill)  
+
+      //On simule le clic sur l'icone avec fireEvent
       const iconNewBill = screen.getByTestId("btn-new-bill")
       iconNewBill.addEventListener('click', handleClickNewBill)
       fireEvent.click(iconNewBill)
+
       //On vérifie que la fonction handleClickIconEye soit bien appelée
       expect(handleClickNewBill).toHaveBeenCalled()
-      //On vérifie l'ouverture de la modale pour visualiser le justificatif
+
+      //On vérifie l'ouverture de la modale NewBill
       const modale = screen.getByTestId('form-new-bill')
       expect(modale).toBeTruthy()
     })
@@ -103,6 +125,7 @@ describe('Given I am connected as Employee and I am on Bill page', () => {
 })
 
 // test d'intégration GET
+//?????
 describe("Given I am a user connected as Employee", () => {
   describe("When I navigate to Dashboard", () => {
     test("fetches bills from mock API GET", async () => {
