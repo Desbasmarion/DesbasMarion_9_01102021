@@ -10,7 +10,7 @@ import BillsUI from "../views/BillsUI.js"
 const onNavigate = (pathname) => {
   document.body.innerHTML = ROUTES({ pathname })
 }
-
+//On indique que nous sommes sur le parcours Employé
 Object.defineProperty(window, 'localStorage', { value: localStorageMock })
 window.localStorage.setItem('user', JSON.stringify({
   type: 'Employee'
@@ -18,26 +18,39 @@ window.localStorage.setItem('user', JSON.stringify({
 
 describe("Given I am connected as an employee", () => {
   describe("When I access NewBill Page", () => {
-    test("Then the newBill page should be rendered", () => {
+    test("Then the NewBill Page should be rendered", () => {
+      //Création page NewBill
       document.body.innerHTML = NewBillUI()
+      
+      //On vérifie la présence du texte 'Envoyer une note de frais' sur la page NewBill
       expect(screen.getAllByText("Envoyer une note de frais")).toBeTruthy()
     })
   })
+  
   describe("When I'm on NewBill Page", () => {
     describe("And I upload a image file", () => {
-      test("Then accepted file appears", () => {
+      test("Then file extension is not correct", () => {
         document.body.innerHTML = NewBillUI()
+        //Instanciation class NewBill
         const newBill = new NewBill({
           document, onNavigate, firestore: null, localStorage: window.localStorage
         })
+
+        //Simulation méthode de chargement d'un fichier
         const handleChangeFile = jest.fn(() => newBill.handleChangeFile)
         const inputFile = screen.getByTestId("file")
+
+        //Ecouteur d'évènement sur input de chargement de fichier
         inputFile.addEventListener("change", handleChangeFile)
+
+        //Simulation de l'évènement avec FireEvent
         fireEvent.change(inputFile, {
             target: {
                 files: [new File(["test.jpg"], "test.jpg", { type: "image/jpg" })],
             }
         })
+
+        //Message d'erreur apparait
         const error = screen.getByTestId('errorMessage')
         expect(error).toBeFalsy
       })
@@ -50,6 +63,7 @@ describe("Given I am connected as an employee", () => {
           document, onNavigate, firestore: null, localStorage: window.localStorage
         })          
        
+        //On créer une nouvelle note de frais pour pouvoir tester la méthode handleSubmit
         const submit = screen.getByTestId('form-new-bill')
         const billTest = {
           name: "billTest",
@@ -62,8 +76,11 @@ describe("Given I am connected as an employee", () => {
           fileName: "test",
           fileUrl: "test.jpg"
         }
-        
+
+        //On simule la méthode handleSubmit
         const handleSubmit = jest.fn((e) => newBill.handleSubmit(e))
+
+        //On applique les valeurs de la note de frais créée aux éléments du DOM existants 
         newBill.createBill = (newBill) => newBill
         document.querySelector(`input[data-testid="expense-name"]`).value = billTest.name
         document.querySelector(`input[data-testid="datepicker"]`).value = billTest.date
@@ -76,15 +93,21 @@ describe("Given I am connected as an employee", () => {
         newBill.fileName = billTest.fileName 
         
         submit.addEventListener('click', handleSubmit)
+
+        //On simule le clic 
         fireEvent.click(submit)
+
+        //On vérifie qu'à la soumission de la note de frais, la méthode handleSubmit a été appelée
         expect(handleSubmit).toHaveBeenCalled()
       })
     })
   })
 })
+
 // test d'intégration POST
+//???????
 describe("Given I am a user connected as an Employee", () => {
-  describe("When I navigate to NewBill Page", () => {
+  describe("When I submit a new bill and return to Bill Page", () => {
     test("fetches bills from mock API POST", async () => {
        const getSpy = jest.spyOn(firebase, "post")
        const bills = await firebase.post()
