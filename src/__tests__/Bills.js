@@ -60,7 +60,7 @@ describe('Given I am connected as Employee and I am on Bill page', () => {
       const html = BillsUI({data : bills})
       document.body.innerHTML = html
 
-      //????
+      //Si l'utilisateur navigue sur la page qui contient Bills dans son URL, alors c'est BillsUI qui est affichée
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname })
       }
@@ -125,7 +125,6 @@ describe('Given I am connected as Employee and I am on Bill page', () => {
 })
 
 // test d'intégration GET
-//?????
 describe("Given I am a user connected as Employee", () => {
   describe("When I navigate to Dashboard", () => {
     test("fetches bills from mock API GET", async () => {
